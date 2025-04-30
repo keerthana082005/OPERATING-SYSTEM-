@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Check Anomalies</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<nav>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/load_processes">Load Processes</a></li>
+        <li><a href="/run_scheduler">Run Scheduler</a></li>
+        <li><a href="/check_anomalies">Check Anomalies</a></li>
+    </ul>
+</nav>
+
+<h1>Anomalies Detected</h1>
+
+<table>
+    <tr><th>PID</th><th>Name</th><th>CPU Usage (%)</th></tr>
+    {% for process in anomalies %}
+    <tr style="color: red;"><td>{{ process.pid }}</td><td>{{ process.name }}</td><td>{{ process.cpu_percent }}</td></tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Load Processes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<nav>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/load_processes">Load Processes</a></li>
+        <li><a href="/run_scheduler">Run Scheduler</a></li>
+        <li><a href="/check_anomalies">Check Anomalies</a></li>
+    </ul>
+</nav>
+
+<h1>Loaded Processes</h1>
+
+<h2>Apps</h2>
+<table>
+    <tr><th>PID</th><th>Name</th><th>CPU Usage (%)</th></tr>
+    {% for process in apps %}
+    <tr><td>{{ process.pid }}</td><td>{{ process.name }}</td><td>{{ process.cpu_percent }}</td></tr>
+    {% endfor %}
+</table>
+
+<h2>Background Processes</h2>
+<table>
+    <tr><th>PID</th><th>Name</th><th>CPU Usage (%)</th></tr>
+    {% for process in background %}
+    <tr><td>{{ process.pid }}</td><td>{{ process.name }}</td><td>{{ process.cpu_percent }}</td></tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>

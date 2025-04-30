@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Home</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<nav>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/load_processes">Load Processes</a></li>
+        <li><a href="/run_scheduler">Run Scheduler</a></li>
+        <li><a href="/check_anomalies">Check Anomalies</a></li>
+    </ul>
+</nav>
+
+<h1>Real-Time CPU Usage</h1>
+<h2>Current CPU Usage: <span id="cpuPercent">0%</span></h2>
+<canvas id="cpuChart"></canvas>
+
+<script>
+    let ctx = document.getElementById("cpuChart").getContext("2d");
+
+    let cpuChart = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: [],
+            datasets: []
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true, max: 100 }
+            }
+        }
+    });
+
+    function updateChart() {
+        fetch("/cpu_usage").then(response => response.json()).then(data => {
+            document.getElementById("cpuPercent").innerText = data.cpu + "%";
+            let timeLabel = new Date().toLocaleTimeString();
+            cpuChart.data.labels.push(timeLabel);
+            if (cpuChart.data.labels.length > 10) cpuChart.data.labels.shift();
+            data.processes.forEach((proc, index) => {
+                if (!cpuChart.data.datasets[index]) {
+                    cpuChart.data.datasets.push({
+                        label: proc.name,
+                        borderColor: '#' + Math.floor(Math.random()*16777215).toString(16),
+                        backgroundColor: 'transparent',
+                        data: []
+                    });
+                }
+                cpuChart.data.datasets[index].data.push(proc.cpu);
+                if (cpuChart.data.datasets[index].data.length > 10) {
+                    cpuChart.data.datasets[index].data.shift();
+                }
+            });
+            cpuChart.update();
+        });
+    }
+
+    setInterval(updateChart, 2000);
+</script>
+
+
+</body>
+</html>
